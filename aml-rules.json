@@ -1,0 +1,14 @@
+[
+  {
+    "name": "HIGH_VALUE_TRANSACTION",
+    "expression": "amount >= 100000"
+  },
+  {
+    "name": "HIGH_RISK_COUNTRY",
+    "expression": "originCountry != destinationCountry"
+  },
+  {
+    "name": "SUSPICIOUS_ONLINE_TRANSACTION",
+    "expression": "channel == 'ONLINE' && amount > 5000 && originCountry != destinationCountry"
+  }
+]

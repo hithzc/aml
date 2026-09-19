@@ -1,0 +1,7 @@
+aml:
+  rules:
+    file: ${RULES_FILE}
+
+spring:
+  application:
+    name: aml
