@@ -11,6 +11,7 @@
 - Claude help me to analyze one exception I meet during the development,
 - GitHub Copilot helped me quicky initialize the Spring Boot project and generate some basic code for the rule engine.
 - GitHub Copilot helped me to implement the unit tests with my given test cases.
+- GitHub Copilot generated the AGENT.md file for this repository.
 
 ## One suggestion accepted
 Calude helped me to indicate the root cause of the following exception:
