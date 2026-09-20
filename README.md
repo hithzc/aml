@@ -1,19 +1,19 @@
 # AML Transaction Screening API
 
-This project is a Spring Boot app that checks a financial transaction against a list of AML (anti-money-laundering) rules. Each rule comes from a JSON file and is run using SpEL (a Spring expression language). If any rule matches, the transaction is marked REVIEW; otherwise it's CLEAR.
+This project is a Spring Boot app that checks a transaction against a list of AML rules. Each rule comes from a JSON file and is run using SpEL (a Spring expression language). If any rule matches, the transaction is marked REVIEW; otherwise it's CLEAR.
 
 ## 1. Build the project
 
 Requirements:
 - Java 17
+- Maven (Maven Wrapper is included, so you can use `./mvnw` or `mvnw.cmd` on Windows)
+- Please use the public maven repository, if you have a private maven repository and missing some dependencies, you can also use the java command to run the jar file instead of `./mvnw spring-boot:run` command.
 
 Build the project:
 
 ```bash
 ./mvnw clean package
 ```
-
-This compiles the code, runs the tests, and produces a JAR in `target/`.
 
 ## 2. Run the application
 
@@ -22,7 +22,14 @@ Start the application locally:
 ```bash
 RULES_FILE="file:$(pwd)/aml-rules.json" ./mvnw spring-boot:run
 ```
+or use java command to run the jar if you have the maven repository issue
+
+```bash
+RULES_FILE="file:$(pwd)/aml-rules.json" java -jar target/aml-0.0.1-SNAPSHOT.jar
+```
+
 You can also point to a different rules file by changing the `RULES_FILE` environment variable.
+
 
 Default application URL:
 
@@ -44,6 +51,16 @@ curl -X POST http://localhost:8080/api/v1/transactions/screen \
     "destinationCountry":"GB",
     "channel":"ONLINE"
   }'
+```
+example response:
+
+```json
+{
+  "transactionId":"TX-10001",
+  "decision":"REVIEW",
+  "matchedRules":["HIGH_VALUE_TRANSACTION","HIGH_RISK_COUNTRY","SUSPICIOUS_ONLINE_TRANSACTION"]
+}
+
 ```
 
 
