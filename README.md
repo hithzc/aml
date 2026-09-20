@@ -69,10 +69,10 @@ example response:
 ```bash
 ./mvnw clean test
 ```
-TransactionScreenServiceTest verfiy how the rules are evaluated and the correct decision is returned. 
-TransactionScreenControllerTest verifies that the REST API returns the correct HTTP status codes and response bodies.
-AMLApplicationStartupTests verifies that the application fails to start when the rules file is invalid.
-RuleEngineTest verifies that the rule engine correctly evaluates rules and returns the expected results.
+- TransactionScreenServiceTest verfiy how the rules are evaluated and the correct decision is returned. 
+- TransactionScreenControllerTest verifies that the REST API returns the correct HTTP status codes and response bodies.
+- AMLApplicationStartupTests verifies that the application fails to start when the rules file is invalid.
+- RuleEngineTest verifies that the rule engine correctly evaluates rules and returns the expected results.
 
 For example, the following scenarios are covered by unit tests:
 - `A transaction matching no rules.` TransactionScreenServiceTest.screen_returnsClearDecisionWhenNoRulesMatch
