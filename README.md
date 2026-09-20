@@ -1,61 +1,107 @@
 # AML Transaction Screening API
 
-A Spring Boot REST API for screening financial transactions against file-based AML rules.
+This project is a Spring Boot application that evaluates a financial transaction against a set of AML rule expressions. Each rule is loaded from a JSON file, evaluated with Spring Expression Language (SpEL), and the result is either `REVIEW` or `CLEAR`.
 
-## Overview
+## 1. Build the project
 
-This project exposes a transaction screening endpoint that evaluates incoming transaction data using Spring Expression Language (SpEL) and a JSON rule file. If any rule matches, the response returns `REVIEW`; otherwise it returns `CLEAR`.
+Requirements:
+- Java 17
 
-## Features
-
-- REST API for transaction screening
-- JSON-based SpEL rules loaded from file
-- Real-time rule loading on each evaluation
-- Request validation with Bean Validation
-- Centralized API error handling
-
-## Project structure
-
-```text
-src/
-  main/
-    java/com/gerard/aml/
-      config/
-      controller/
-      domain/
-      rule/
-      service/
-      AmlApplication.java
-    resources/
-      application.yml
-      rules.json
-  test/
-    java/com/gerard/aml/controller/
-```
-
-## Prerequisites
-
-- Java 21 recommended (matches the project runtime expectations used during development)
-- Maven or Maven Wrapper
-
-## Run locally
+Build the project:
 
 ```bash
-./mvnw clean test
-RULES_FILE="file:$(pwd)/aml-rules.json" ./mvnw spring-boot:run
+./mvnw clean package
 ```
 
-The application starts on the default Spring Boot port:
+This compiles the code, runs the tests, and produces a JAR in `target/`.
+
+## 2. Run the application
+
+Start the application locally:
+
+```bash
+RULES_FILE="file:$(pwd)/aml-rules.json" ./mvnw spring-boot:run
+```
+You can also point to a different rules file by changing the `RULES_FILE` environment variable.
+
+Default application URL:
 
 ```text
 http://localhost:8080
 ```
 
-## API
+
+## 3. Run the tests
+
+Run the suite:
+
+```bash
+./mvnw test
+```
+
+
+## 4. Architecture and design
+
+- `controller` — REST API entry point
+- `service` — orchestration of request processing
+- `rule` — rule loading and evaluation engine
+- `domain` — request and response DTOs
+- `resources` — configuration and rule files
+
+### Request flow
+
+1. HTTP request enters `TransactionScreenController`
+2. Controller validates JSON with Bean Validation
+3. `TransactionScreenService` calls `RuleEngine.evaluate(request)`
+4. `RuleEngine` loads the rule definitions from the configured file
+5. Each rule expression is evaluated using SpEL against the transaction request
+6. If at least one rule matches, the decision is `REVIEW`; otherwise `CLEAR`
+
+### Design choices
+
+- Rules are externalized to JSON rather than hardcoded in Java so non-developers can tune them without a code deployment
+- SpEL is used for rule expressions because it is compact and well integrated with Spring
+- Startup validation ensures malformed rules or duplicate names fail fast before the app is considered healthy
+- The response is intentionally small and easy for downstream systems to consume
+
+## 5. Important assumptions
+
+This project is intentionally a lightweight sample/POC, not a full production AML platform.
+
+Important assumptions:
+
+- Transaction screening is rule-based and deterministic, not probabilistic or risk-scoring based
+- All rule expressions operate on a single request object, not historical account or customer data
+- Rule files are trusted and managed by the application owner
+- The source of truth for risk logic is the JSON rule file, not a database
+- The app is running in a single instance for local or small-scale usage
+
+## 6. How rules are configured
+
+Rules live in `aml-rules.json` You can also point to a different rules file by changing the `RULES_FILE` environment variable.:
+
+```json
+[
+  {
+    "name": "HIGH_VALUE_TRANSACTION",
+    "expression": "amount >= 100000"
+  },
+  {
+    "name": "HIGH_RISK_COUNTRY",
+    "expression": "originCountry != destinationCountry"
+  },
+  {
+    "name": "SUSPICIOUS_ONLINE_TRANSACTION",
+    "expression": "channel == 'ONLINE' && amount > 5000 && originCountry != destinationCountry"
+  }
+]
+```
+
+## 7. API
 
 ### POST /api/v1/transactions/screen
 
-Request body:
+Request body example:
 
 ```json
 {
@@ -69,7 +115,7 @@ Request body:
 }
 ```
 
-curl example (POST to localhost:8080):
+curl example:
 
 ```bash
 curl -X POST http://localhost:8080/api/v1/transactions/screen \
@@ -85,9 +131,7 @@ curl -X POST http://localhost:8080/api/v1/transactions/screen \
   }'
 ```
 
-The endpoint returns a JSON decision (e.g., {"transactionId":"TX-10001","decision":"REVIEW","matchedRules":[...]}).
-
-Example success response:
+Example response:
 
 ```json
 {
@@ -97,22 +141,61 @@ Example success response:
 }
 ```
 
-## Rule configuration
+## 8. What was deliberately not implemented
 
-Rules are stored in `override-rules.json`:
+This project intentionally does not include:
 
-```json
-[
-  {
-    "name": "HIGH_VALUE_TRANSACTION",
-    "expression": "amount >= 100000"
-  }
-]
-```
+- user authentication/authorization
+- database persistence for transactions or rule history
+- asynchronous processing or event-driven queues
+- a rule authoring UI or admin portal
+- multi-tenant configuration
+- external policy engine integration (e.g. Drools, OPA)
+- audit trail / explainability dashboard for every screening decision
+- full sanctions screening or PEP matching against external systems
 
-The application can also read an external rule file via the `RULES_FILE` environment variable:
+Those concepts are common in production AML systems, but they are outside the scope of this sample implementation.
 
-```bash
-RULES_FILE="file:$(pwd)/aml-rules.json" ./mvnw spring-boot:run
+## 9. What I would improve for production
+
+If this were going into production, I would prioritize:
+
+- persistent rule versioning and auditing
+- immutable rule snapshots and deployment promotion flow
+- richer error handling and structured operational logs
+- metrics, tracing, and alerting for rule evaluation failures
+- database-backed transaction history and review workflow
+- geo-distributed or multi-instance deployment with shared configuration
+- stronger security controls and authenticated API access
+- support for rule authoring and review approvals by compliance teams
+- integration with external sanctions and watchlist data sources
+- performance benchmarking and rule optimization for scale
+
+## 10. Project structure
+
+```text
+src/
+  main/
+    java/com/gerard/aml/
+      controller/
+      domain/
+      rule/
+      service/
+      AmlApplication
+    resources/
+      application.yml
+  test/
+    java/com/gerard/aml/
+      controller/
+      rule/
+      service/
+      AmlApplicationStartupTests
+    resources/
+      duplicate-rules.json
+      invalid-rules.json
+      invalid-syntax-rules.json
+      non-boolean-rules.json
+      valid-rules.json
+aml-rules.json      
 ```
 
