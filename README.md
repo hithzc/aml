@@ -52,6 +52,18 @@ curl -X POST http://localhost:8080/api/v1/transactions/screen \
 ```bash
 ./mvnw clean test
 ```
+TransactionScreenServiceTest verfiy how the rules are evaluated and the correct decision is returned. 
+TransactionScreenControllerTest verifies that the REST API returns the correct HTTP status codes and response bodies.
+AMLApplicationStartupTests verifies that the application fails to start when the rules file is invalid.
+RuleEngineTest verifies that the rule engine correctly evaluates rules and returns the expected results.
+
+For example, the following scenarios are covered by unit tests:
+- `A transaction matching no rules.` TransactionScreenServiceTest.screen_returnsClearDecisionWhenNoRulesMatch
+- `A transaction matching one rule.` TransactionScreenServiceTest.screen_returnsReviewDecisionWhenOneRuleMatches
+- `A transaction matching multiple rules.` TransactionScreenServiceTest.screen_returnsReviewDecisionWhenMultipleRulesMatch
+- `Invalid input.`  TransactionScreenControllerTest.screenTransactionWithMissingRequiredFieldsReturns400
+- `Configuration-dependent behaviour.` AmlApplicationStartupTests
+
 
 ## 4. How rules are configured
 
@@ -154,38 +166,16 @@ Example response:
 }
 ```
 
-## 6. Important assumptions
+## 6. Improvement for production
 
-This project is intentionally a lightweight sample/POC, not a full production AML platform.
-
-Important assumptions:
-
-- Transaction screening is rule-based and deterministic, not probabilistic or risk-scoring based
-- All rule expressions operate on a single request object, not historical account or customer data
-- Rule files are trusted and managed by the application owner
-- The source of truth for risk logic is the JSON rule file, not a database
-- The app is running in a single instance for local or small-scale usage
-
-
-
-## 
-
-## 8. What was deliberately not implemented
 
 This project intentionally does not include:
 
 - user authentication/authorization
 - database persistence for transactions or rule history
-- asynchronous processing or event-driven queues
 - a rule authoring UI or admin portal
-- multi-tenant configuration
-- external policy engine integration (e.g. Drools, OPA)
 - audit trail / explainability dashboard for every screening decision
-- full sanctions screening or PEP matching against external systems
 
-Those concepts are common in production AML systems, but they are outside the scope of this sample implementation.
-
-## 9. What I would improve for production
 
 If this were going into production, I would prioritize:
 

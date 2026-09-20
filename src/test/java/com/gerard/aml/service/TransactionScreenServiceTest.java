@@ -45,7 +45,7 @@ class TransactionScreenServiceTest {
     }
 
     @Test
-    void screen_returnsReviewDecisionWhenAtLeastOneRuleMatches() {
+    void screen_returnsReviewDecisionWhenOneRuleMatches() {
         service = new TransactionScreenService(ruleEngine);
         when(ruleEngine.evaluate(any())).thenReturn(List.of("HIGH_VALUE_TRANSACTION"));
 
