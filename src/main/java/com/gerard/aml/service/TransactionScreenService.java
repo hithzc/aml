@@ -5,7 +5,6 @@ import com.gerard.aml.domain.TransactionScreenRequest;
 import com.gerard.aml.domain.TransactionScreenResponse;
 import com.gerard.aml.rule.RuleEngine;
 import java.util.List;
-import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,0 +1,4 @@
+[
+  { "name": "DUP_RULE", "expression": "amount > 0" },
+  { "name": "DUP_RULE", "expression": "amount > 100" }
+]

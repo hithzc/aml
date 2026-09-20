@@ -32,7 +32,7 @@ public class RuleEngine {
     private volatile List<Rule> cachedRules;
 
     public RuleEngine(ResourceLoader resourceLoader,
-                      @Value("${aml.rules.file}") String rulesFile) {
+                      @Value("${aml.rules.file:classpath:rules.json}") String rulesFile) {
         this.resourceLoader = resourceLoader;
         this.rulesFile = rulesFile;
     }
