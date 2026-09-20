@@ -8,8 +8,8 @@
 ## What they were used for
 
 - Claude recommended the Spel for the template engine in this project
-- Claude help me to analyze one exception I meet during the development,
-- GitHub Copilot helped me quicky initialize the Spring Boot project and generate some basic code for the rule engine.
+- Claude helped me to analyze one exception I met during the development,
+- GitHub Copilot helped me quicky initialize the Spring Boot project and generated some basic code for the rule engine.
 - GitHub Copilot helped me to implement the unit tests with my given test cases.
 - GitHub Copilot generated the AGENT.md file for this repository.
 
@@ -39,5 +39,5 @@ It helped me quickly fix the issue.
 
 I asked Github Copilot to give me some suggestion on how to improve the performance of the rule engine, it suggested me to cache the compiled Spel expressions, but I rejected this suggestion.
 
-I don't want to build another endpoint to clear the cache and reload the rule file, but I think everytime I update the rule file it should take effect 
+I did't want to build another endpoint to clear the cache and reload the rule file, but I though everytime I update the rule file it should take effect 
 immediately, so I decided to compile the Spel expression every time I evaluate a transaction request.
