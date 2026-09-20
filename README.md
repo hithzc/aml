@@ -168,27 +168,19 @@ Example response:
 
 ## 6. Improvement for production
 
+If this were going into production, I would implement the following:
 
-This project intentionally does not include:
+- API authentication and authorization
+- Cloud infrastructure (e.g., AWS, GCP, Azure) with CI/CD pipelines and Terraform for IoC
+- Containerization with Docker and orchestration with ECS or Kubernetes
+- Monitoring and logging with Prometheus, Grafana or Datadog
+- Admin UI for managing rules and viewing transaction history
+- Database for storing transaction history and rule evaluation results
+- Caching database like Redis for rule definitions to improve performance
+- Latency based load balancing for high availability and low latency
+- Rate limiting and throttling to prevent abuse
+- Async processing with webhook callback for not real-time processing of transactions
 
-- user authentication/authorization
-- database persistence for transactions or rule history
-- a rule authoring UI or admin portal
-- audit trail / explainability dashboard for every screening decision
-
-
-If this were going into production, I would prioritize:
-
-- persistent rule versioning and auditing
-- immutable rule snapshots and deployment promotion flow
-- richer error handling and structured operational logs
-- metrics, tracing, and alerting for rule evaluation failures
-- database-backed transaction history and review workflow
-- geo-distributed or multi-instance deployment with shared configuration
-- stronger security controls and authenticated API access
-- support for rule authoring and review approvals by compliance teams
-- integration with external sanctions and watchlist data sources
-- performance benchmarking and rule optimization for scale
 
 
 

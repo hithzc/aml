@@ -239,15 +239,6 @@ This project intentionally does not include:
 - multi-tenant configuration
 - advanced rule governance
 
-## Production improvements if this were expanded
-
-If this were moving toward production, key improvements would include:
-- versioned rule storage with review workflow
-- database-backed transaction history and audit trail
-- metrics, tracing, and alerting
-- stronger security controls and API auth
-- rule authoring UI / admin workflow
-- integration with external AML data sources
 
 ## Working conventions for agents
 
